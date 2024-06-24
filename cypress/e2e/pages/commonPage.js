@@ -42,6 +42,10 @@ pero así tambien estaría bien
       cy.url().should('not.include', urlValue);
     }
 
+    checkUrlValueStatus(status, urlValue) {
+      cy.url().should(status, urlValue)
+    }
+
     checkElementStateByDataTest (elementName, status) {
       cy.get(`[data-test="${elementName}"]`).should(status);
     }
@@ -54,6 +58,32 @@ pero así tambien estaría bien
       cy.get(`[data-test="${elementName}"]`).should('have.value', value);
     }  
 
+    clickButtonByNameWaitCookies (buttonName, apiCall) {
+      cy.intercept(apiCall).as('cookiesLoad');
+      cy.wait('@cookiesLoad', {timeout: 10000});
+      cy.contains(buttonName).click();
+    }
+
+    clickButtonByName (buttonName) {
+      cy.contains('button', buttonName).click();
+    }
+
+    waitXSeconds (seconds) {
+      cy.wait(seconds);
+    }
+
+    /// Función para testear accesibilidad
+    testAccesibilityInScreen () {
+      cy.injectAxe();
+      cy.checkA11y()
+    }
+
+    testAccesibilityOnElement (elementLocator) {
+      cy.injectAxe();
+      cy.checkA11y(elementLocator)
+    }
+
+    // API test
     interceptApiCallAddAlias (apiCall, alias) {
       cy.intercept(apiCall).as(alias);
     }
@@ -61,31 +91,6 @@ pero así tambien estaría bien
     waitApiCallByAlias(time, aliasApiCall) {
       cy.wait('@'+ aliasApiCall, {timeout: time});
     }
-
-    clickButtonByNameWaitCookies (buttonName, apiCall) {
-      cy.intercept(apiCall).as('cookiesLoad');
-      cy.wait('@cookiesLoad', {timeout: 1});
-      cy.contains(buttonName).click();
-    }
-
-    clickButtonByName (buttonName, apiCall) {
-      cy.contains(buttonName).click();
-    }
-
-    waitXSeconds (seconds) {
-      cy.wait(seconds);
-    }
-
-      /// Funciones para testear accesibilidad
-      testAccesibilityInScreen () {
-        cy.injectAxe();
-        cy.checkA11y()
-      }
-  
-      testAccesibilityOnElement (elementLocator) {
-        cy.injectAxe();
-        cy.checkA11y(elementLocator)
-      }
   }
   
   
